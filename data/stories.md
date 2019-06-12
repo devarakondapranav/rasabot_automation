@@ -1,11 +1,15 @@
 
-## sad story
+## 
 * greet
-  - utter_greetResp
-* sad
-  - utter_sadResp
-  - action_restart
-## ceo
+  - utter_greet
 * ceo
-  - utter_ceoTemp
+  - action_get_ceo_name
+  - action_restart
+## ceosalstory
+* greet
+  - utter_greet
+* ceo
+  - action_get_ceo_name
+* ceosal
+  - action_get_ceo_sal
   - action_restart

@@ -1,22 +1,16 @@
 intents:
   - greet
-  - sad
   - ceo
+  - ceosal
 
 actions:
-  - utter_greetResp
-  - utter_sadResp
-  - utter_ceoTemp
+  - utter_greet
+  - action_get_ceo_name
+  - action_get_ceo_sal
 
 templates:
-  utter_greetResp:
-  - text: "Hi there. How may I help you?"
-
-  utter_sadResp:
-  - text: "Everyone has their highs and lows. Cheer up :)"
-
-  utter_ceoTemp:
-  - text: "Satya Nadella is the CEO of our company"
+  utter_greet:
+  - text: "Hey there. How are you feeling?"
 
   utter_default:
   - text: "I am not sure I understand that."

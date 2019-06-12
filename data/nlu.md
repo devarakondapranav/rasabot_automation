@@ -1,20 +1,14 @@
 
 ## intent:greet
-- Hi
-- Hey
-- Hello
-- heyya
-- howdy
-
-## intent:sad
-- I am feeling low
-- bad
-- sad
-- low
-- not that great
+- hi
+- hello
+- hey
 
 ## intent:ceo
 - who is your ceo
 - who is the ceo
-- who is the chief executive officer of your company?
-- who is the chief executive officer of your company
+
+## intent:ceosal
+- what is his salary?
+- how much does he earn?
+- what is his income?

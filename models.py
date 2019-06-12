@@ -38,5 +38,15 @@ class Story(db.Model):
 class StoryStep(db.Model):
 	id = db.Column(db.Integer, primary_key=True)
 	story_id = db.Column(db.Integer, db.ForeignKey('story.id'))
-	isIntent = db.Column(db.BOOLEAN, unique=False, nullable=False)
+	isIntent = db.Column(db.Integer, unique=False, nullable=False)#1 -> intent, 2->template, 3->action
 	int_or_temp_id = db.Column(db.Integer, nullable=False)
+
+
+class Slot(db.Model):
+	id = db.Column(db.Integer, primary_key=True)
+	name = db.Column(db.String(100), unique=True, nullable=False)
+	type_slot = db.Column(db.String(100), unique=False, nullable=False)
+
+class Action(db.Model):
+	id = db.Column(db.Integer, primary_key=True)
+	name = db.Column(db.String(100), unique=True, nullable=False)#camel case

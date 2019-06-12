@@ -1,4 +1,4 @@
-from models import Intent, IntentMessage, Template, Story, StoryStep, db
+from models import Intent, IntentMessage, Template, Story, StoryStep, Slot, Action, db
 from flask import Flask, render_template, request
 import os
 
@@ -87,10 +87,12 @@ def showStoryDetails(storyName, storyId):
 	story_steps = StoryStep.query.filter_by(story_id=storyId).all()
 	m = []
 	for x in story_steps:
-		if(x.isIntent):
+		if(x.isIntent == 1):
 			m.append("Intent *" + Intent.query.filter_by(id = x.int_or_temp_id).first().name)
-		else:
+		elif(x.isIntent == 2):
 			m.append("--------- Text: "+Template.query.filter_by(id=x.int_or_temp_id).first().name)
+		else:
+			m.append('--------- Action: ' + Action.query.filter_by(id=x.int_or_temp_id).first().name)
 
 
 	return render_template("story_detail.html", storyName=storyName, story_steps=story_steps, m=m)
@@ -168,8 +170,9 @@ def createTemplate():
 def newStory():
 	intents = Intent.query.all()
 	templates = Template.query.all()
+	actions = Action.query.all()
 
-	return render_template("newStory.html", intents = intents, templates=templates)
+	return render_template("newStory.html", intents = intents, templates=templates, actions=actions)
 
 
 # जन्मदिन मुबारक नयाज़ भाई
@@ -188,13 +191,18 @@ def createStory():
 	for i in range(int(rowcount)):
 		foo = request.form['row' + str(i)]
 		if(foo.split()[0] == 'intent'):
-			foobar = StoryStep(isIntent=True, story_id=story_obj_id, int_or_temp_id = int(foo.split()[1]))
+			foobar = StoryStep(isIntent=1, story_id=story_obj_id, int_or_temp_id = int(foo.split()[1]))
+			db.session.add(foobar)
+			db.session.commit()
+		elif(foo.split()[0] == 'template'):
+			foobar = StoryStep(isIntent=2, story_id=story_obj_id, int_or_temp_id = int(foo.split()[1]))
 			db.session.add(foobar)
 			db.session.commit()
 		else:
-			foobar = StoryStep(isIntent=False, story_id=story_obj_id, int_or_temp_id = int(foo.split()[1]))
+			foobar = StoryStep(isIntent=3, story_id=story_obj_id, int_or_temp_id = int(foo.split()[1]))
 			db.session.add(foobar)
 			db.session.commit()
+
 	return render_template("success.html", message="Story created")
 
 
@@ -228,6 +236,79 @@ def createFact():
 
 	return render_template("success.html", message="Added fact to DB")
 
+@app.route("/newSlot")
+def newSlot():
+	return render_template("newSlot.html")
+
+
+@app.route("/createSlot", methods=["POST"])
+def createSlot():
+	slot_name = request.form['slot_name']
+	slot_type = request.form['slot_type']
+	slot_obj = Slot(name=slot_name, type_slot = slot_type)
+	db.session.add(slot_obj)
+	db.session.commit()
+
+	return render_template("success.html", message="Added slot to DB")
+
+
+def convertNameToCamel(name):
+	res = name[0].upper()
+	convert = False
+	for c in name[1:]:
+		if(c == "_"):
+			convert = True
+			continue
+		else:
+			if(convert):
+				res += c.upper()
+				convert = False
+			else:
+				res += c
+	return res
+
+
+
+@app.route("/newAction")
+def newAction():
+	return render_template("newAction.html")
+
+
+@app.route("/createAction", methods=["POST"])
+def createAction():
+	action_name = "action_" + request.form['action_name']
+	actionObj = Action(name=action_name)
+	conv_action_name = convertNameToCamel(action_name)
+	code_content = '''
+class %s(Action):
+
+    def name(self) -> Text:
+        return "%s"
+
+    def run(self, dispatcher: CollectingDispatcher,
+            tracker: Tracker,
+            domain: Dict[Text, Any]) -> List[Dict[Text, Any]]:
+
+
+        #use tracker.get_slot to retrieve slot values if they are set
+        #foo = tracker.get_slot('your_slot_name')
+
+        #use dispatcher.utter_message to return the message the chatbot should output
+        dispatcher.utter_message("Hello World!")
+
+        return []
+'''%(conv_action_name, action_name)
+	f = open("actions.py", "a")
+	f.write(code_content)
+	f.close()
+
+	db.session.add(actionObj)
+	db.session.commit()
+
+	return render_template("success.html", message="Action created. Open actions.py to add custom code.")
+    
+
+
 
 @app.route('/train')
 def train():
@@ -248,17 +329,22 @@ def train():
 	for story in all_stories:
 		f.write("\n## " + story.name + "\n")
 		for step in StoryStep.query.filter_by(story_id=story.id).all():
-			if(step.isIntent):
+			if(step.isIntent==1):
 				f.write("* " + Intent.query.filter_by(id=step.int_or_temp_id).first().name + "\n")
-			else:
+			elif(step.isIntent == 2):
 				temp = Template.query.filter_by(id=step.int_or_temp_id).first().name.replace(" ", "_")
 				f.write("  - utter_" + temp + "\n")
+			else:
+				temp = Action.query.filter_by(id=step.int_or_temp_id).first().name.replace(" ", "_")
+				f.write("  - " + temp + "\n")
 		f.write("  - action_restart")
 
 
 	f.close()
 
 	templates = Template.query.all()
+	actions = Action.query.all()
+	slots = Slot.query.all()
 
 
 	f = open("domain.yml", "w")
@@ -273,6 +359,15 @@ def train():
 	f.write("\nactions:\n")
 	for template in templates:
 		f.write("  - utter_" + template.name.replace(" ", "_") + "\n")
+
+	for action in actions:
+		f.write("  - " + action.name + '\n')
+
+	if(not(len(slots) == 0)):
+		f.write("\nslots:\n")
+		for slot in slots:
+			f.write("  " + slot.name + ":\n")
+			f.write("    type: " + slot.type_slot + "\n")
 
 
 	f.write("\ntemplates:\n")
@@ -289,7 +384,7 @@ def train():
 
 	f.close()
 	train_cmd = "rasa train"
-	os.system(train_cmd)
+	#os.system(train_cmd)
 
 	return render_template("success.html", message="Done training")
 
