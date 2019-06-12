@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title></title>
+</head>
+<body>
+
+	<h1>Stark bot</h1><br>
+	<button onclick="myFunction(0)">Add new intent</button><button onclick="myFunction(1)">Add new Template</button>
+	<form action="/createStory" method="POST">
+		<table id="myTable">
+			<input type="hidden" id="rowcount" value="2" name="rowcount">
+			  <tr>
+			    <td>Name of the story</td>
+			    <td><input type="text" name="story_name" placeholder="avoid spaces in the name"></td>
+			  </tr>
+			  <tr>
+			  	<td>Select Intent </td>
+			  	<td>
+			  		<select name="row0" id = "intent_content">
+			  			{% for x in intents%}
+			  				<option value = "intent {{x.id}}">{{x.name}}</option>
+			  			{% endfor %}
+			  		</select>
+			  	</td>
+			  </tr>
+			  <tr>
+			  	<td>Select Template/Response </td>
+			  	<td>
+			  		<select name="row1" id = "template_content">
+			  			{% for x in templates %}
+			  				<option value = "template {{x.id}}">{{x.name}} --> {{x.text}}</option>
+			  			{% endfor %}
+			  		</select>
+			  	</td>
+
+
+			  </tr>
+	  
+	 	
+		</table><br>
+		
+		<input type="submit" name="" value="Create Story"><br>
+	</form>
+
+</body>
+<script type="text/javascript">
+	var messcount = 2;
+	function myFunction(target) 
+	{
+
+	  if(target == 0)
+	  {
+		  var table = document.getElementById("myTable");
+		  var row = table.insertRow(-1);
+		  var cell1 = row.insertCell(0);
+		  var cell2 = row.insertCell(1);
+		  cell1.innerHTML = "Select Intent";
+		  cell2.innerHTML = "<select name = 'row" + Number(messcount) + "'>"  + document.getElementById("intent_content").innerHTML    + "</select>"
+		  messcount += 1;
+		  document.getElementById("rowcount").value = String(Number(document.getElementById("rowcount").value) + 1);
+	  }
+	  else
+	  {
+	  	  var table = document.getElementById("myTable");
+		  var row = table.insertRow(-1);
+		  var cell1 = row.insertCell(0);
+		  var cell2 = row.insertCell(1);
+		  cell1.innerHTML = "Select Template";
+		  cell2.innerHTML = "<select name = 'row" + Number(messcount) + "'>"  + document.getElementById("template_content").innerHTML    + "</select>"
+		  messcount += 1;
+		  document.getElementById("rowcount").value = String(Number(document.getElementById("rowcount").value) + 1);
+	  }
+
+	}
+</script>
+
+
+
+</html>

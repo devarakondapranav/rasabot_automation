@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title></title>
+</head>
+<body>
+	<h1>Stark bot</h1><br>
+
+	<h4>Currently saved templates are</h4>
+	<ul>
+		{% for template in templates %}
+			<li>Template name: {{template.name}}<br>-------- {{template.text}}</li>
+		{% endfor %}
+
+	</ul>
+		
+</body>
+</html>

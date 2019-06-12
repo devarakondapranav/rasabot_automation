@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title></title>
+	<style>
+		
+</style>
+</head>
+<body>
+	<h1>StareIn Bot</h1><br>
+
+	<h4>Lets create a new Intent!!</h4><br>
+
+	<button onclick="myFunction()">Add new message</button><br><br>
+	<form action="/createIntent" method="POST">
+		<table id="myTable">
+			<input type="hidden" id="rowcount" value="1" name="rowcount">
+			  <tr>
+			    <td>Name of the intent</td>
+			    <td><input type="text" name="intent_name" placeholder="avoid spaces in the name"></td>
+			  </tr>
+			  <tr>
+			  	<td>Message </td>
+			  	<td><input type="text" name="message0" placeholder="what question should be classified as this intent?"></td>
+			  </tr>
+	  
+	 	
+		</table><br>
+		
+		<input type="submit" name="" value="Create Intent"><br>
+	</form>
+
+		
+<script>
+	var messcount = 1;
+	function myFunction() {
+	  var table = document.getElementById("myTable");
+	  var row = table.insertRow(-1);
+	  var cell1 = row.insertCell(0);
+	  var cell2 = row.insertCell(1);
+	  cell1.innerHTML = "Message";
+	  cell2.innerHTML = "<input type='text' name='message" +String(messcount) + "'>";
+	  messcount += 1;
+	  document.getElementById("rowcount").value = String(Number(document.getElementById("rowcount").value) + 1);
+
+	}
+</script>
+
+
+
+</body>
+</html>

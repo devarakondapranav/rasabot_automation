@@ -1,31 +1,22 @@
 intents:
   - greet
-  - goodbye
-  - affirm
-  - deny
-  - mood_great
-  - mood_unhappy
+  - sad
+  - ceo
 
 actions:
-- utter_greet
-- utter_cheer_up
-- utter_did_that_help
-- utter_happy
-- utter_goodbye
+  - utter_greetResp
+  - utter_sadResp
+  - utter_ceoTemp
 
 templates:
-  utter_greet:
-  - text: "Hey! How are you?"
+  utter_greetResp:
+  - text: "Hi there. How may I help you?"
 
-  utter_cheer_up:
-  - text: "Here is something to cheer you up:"
-    image: "https://i.imgur.com/nGF1K8f.jpg"
+  utter_sadResp:
+  - text: "Everyone has their highs and lows. Cheer up :)"
 
-  utter_did_that_help:
-  - text: "Did that help you?"
+  utter_ceoTemp:
+  - text: "Satya Nadella is the CEO of our company"
 
-  utter_happy:
-  - text: "Great carry on!"
-
-  utter_goodbye:
-  - text: "Bye"
+  utter_default:
+  - text: "I am not sure I understand that."

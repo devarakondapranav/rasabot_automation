@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title></title>
+</head>
+<body>
+	<h1>StareIn Bot</h1><br>
+
+	<h4>Currently saved intents are</h4><br>
+	<ul>
+	{% for intent in intents %}
+		<li><a href="/getIntentDetails/{{intent.id}}">{{intent.name}}</a></li>
+	{% endfor %}
+
+
+</body>
+</html>

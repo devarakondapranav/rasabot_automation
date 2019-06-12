@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title></title>
+</head>
+<body>
+	<h1>StareIn Bot</h1><br>
+
+	<h4>Currently saved stories are</h4><br>
+	<ul>
+	{% for story in stories %}
+		<li><a href="/getStoryDetails/{{story.name}}/{{story.id}}">{{story.name}}</a></li>
+	{% endfor %}
+
+
+</body>
+</html>
