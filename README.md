@@ -60,7 +60,8 @@ Rasa NLU will automatically check for slots with the same name as the entity nam
 4. Edit the run method of your actions class in actions.py. 
 ![alt text](https://textract-console-us-east-1-f1845175-fc78-475d-9b50-a287c2cf3cd0.s3.amazonaws.com/actionscode.PNG "cricketer action code")
 
-5. Create a story to put all this together.
+5. Create a story to put all this together.  
+
 ![alt text](https://textract-console-us-east-1-f1845175-fc78-475d-9b50-a287c2cf3cd0.s3.amazonaws.com/story.PNG "cricketer story")
 
 6. Click on the train button to train your model. Navigate to the project root and use the command `rasa shell` to start talking to your bot. You can ask the bot 'How many centuries did Virat Kohli make?' and see the bot in action.
